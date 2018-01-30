@@ -3,6 +3,8 @@
 import sys
 from multiprocessing import Process, Queue
 import time
+import configparser
+import getopt
 
 queue_1 = Queue()
 queue_2 = Queue()
@@ -12,33 +14,42 @@ class ArgParse():
     def __init__(self, argv):
         self._argv = argv
         self.params = {}
-        key, val = None, None
-        for elem in argv:
-            if (elem == '-c' or
-                    elem == '-d' or
-                    elem == '-o' or
-                    elem == '-C'):
-                key = elem
-            elif key == None:
-                print('Parameter Error')
-                #print('Parameter Error', sys._getframe().f_lineno)
-                sys.exit(-1)
-            elif key in self.params.keys():
-                print('Parameter Error')
-                #print('Parameter Error', sys._getframe().f_lineno)
-                sys.exit(-1)
-            else:
-                self.params[key] = elem
-                key = None
+        try:
+            opts, args = getopt.getopt(argv, 'c:o:d:C:')
+        except Exception as ex:
+            print('Parameter Error')
+            #print('Parameter Error', sys._getframe().f_lineno)
+            sys.exit(-1)
+
+        for elem in opts:
+            self.params[elem[0]] = elem[-1]
 
     def get_config_type(self):
-        return self.params.get('-C', '[DEFAULT]')
+        return self.params.get('-C', 'DEFAULT')
+
     def get_config_file(self):
-        return self.params['-c']
+        try:
+            return self.params['-c']
+        except Exception as ex:
+            print('Parameter Error')
+            #print('Parameter Error', sys._getframe().f_lineno)
+            sys.exit(-1)
+
     def get_data_file(self):
-        return self.params['-d']
+        try:
+            return self.params['-d']
+        except Exception as ex:
+            print('Parameter Error')
+            #print('Parameter Error', sys._getframe().f_lineno)
+            sys.exit(-1)
+
     def get_output_file(self):
-        return self.params['-o']
+        try:
+            return self.params['-o']
+        except Exception as ex:
+            print('Parameter Error')
+            #print('Parameter Error', sys._getframe().f_lineno)
+            sys.exit(-1)
 
 def handler_queue_over(data):
     if len(data) != 2:
@@ -48,7 +59,7 @@ def handler_queue_over(data):
         return True
     return False
 
-
+"""
 def parse_config_file(filename, config_type):
     ret = {}
     with open(filename, 'r') as f:
@@ -72,6 +83,15 @@ def parse_config_file(filename, config_type):
                     f.close()
                     sys.exit(-1)
     return ret
+"""
+def parse_config_file(filename, config_type):
+    ret = {}
+    config = configparser.ConfigParser()
+    config.read(filename)
+    ret = dict(config[config_type])
+    return ret
+
+
 
 def parse_data_file(filename):
     ret = {}
@@ -98,16 +118,22 @@ def parse_data_file(filename):
 class calc():
     def __init__(self, config):
         try:
-            self._jishul = config.pop('JiShuL')
-            self._jishuh = config.pop('JiShuH')
+            self._jishul = float(config.pop('jishul'))
+            self._jishuh = float(config.pop('jishuh'))
         except Exception as ex:
             print('Parameter Error')
-            #print(ex)
+            print(ex)
             #print('Parameter Error', sys._getframe().f_lineno)
             sys.exit(-1)
         self.rates = 0.0
         for key, val in config.items():
-            self.rates += val
+            try:
+                self.rates += float(val)
+            except Exception as ex:
+                print('Parameter Error')
+                print(ex)
+                #print('Parameter Error', sys._getframe().f_lineno)
+                sys.exit(-1)
 
     def get_salary_pre(self, value):
         if value < self._jishul:
