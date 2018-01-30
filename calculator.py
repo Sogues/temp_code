@@ -112,9 +112,12 @@ class calc():
             val = val * 0.35 - 5505
         else:
             val = val * 0.45 - 13505
+        _salary = value - sb - val
+        if _salary <= 0:
+            _salary = 0
         return [('%.2f'%sb),
                 ('%.2f'%val),
-                ('%.2f'%(value-sb-val))]
+                ('%.2f'%(_salary))]
 
 def main(argv):
     if len(argv) != 7:

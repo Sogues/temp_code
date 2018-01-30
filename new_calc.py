@@ -134,10 +134,13 @@ class calc():
             else:
                 val = val * 0.45 - 13505
 
+            _salary = value - sb - val
+            if _salary <= 0:
+                _salary = 0
             ret = [name, value,
                     ('%.2f'%sb),
                     ('%.2f'%val),
-                    ('%.2f'%(value-sb-val))]
+                    ('%.2f'%(_salary))]
             queue_2.put(ret)
         queue_2.put(('over', -1))
         """
