@@ -59,31 +59,30 @@ def handler_queue_over(data):
         return True
     return False
 
-"""
-def parse_config_file(filename, config_type):
-    ret = {}
-    with open(filename, 'r') as f:
-        READ = 0
-        for elem in f.readlines():
-            if elem == '\n' and READ != 0:
-                break
-            elem = elem.split('\n')[0]
-            if elem == config_type:
-                READ = 1
-                continue
-            if READ == 1:
-                _tmp = elem.split(' ')
-                try:
-                    ret[_tmp[0]] = float(_tmp[-1])
-                    if float(_tmp[-1]) < 0:
-                        raise Exception
-                except Exception as ex:
-                    print('Parameter Error')
-                    #print('Parameter Error', sys._getframe().f_lineno)
-                    f.close()
-                    sys.exit(-1)
-    return ret
-"""
+#def parse_config_file(filename, config_type):
+#    ret = {}
+#    with open(filename, 'r') as f:
+#        READ = 0
+#        for elem in f.readlines():
+#            if elem == '\n' and READ != 0:
+#                break
+#            elem = elem.split('\n')[0]
+#            if elem == config_type:
+#                READ = 1
+#                continue
+#            if READ == 1:
+#                _tmp = elem.split(' ')
+#                try:
+#                    ret[_tmp[0]] = float(_tmp[-1])
+#                    if float(_tmp[-1]) < 0:
+#                        raise Exception
+#                except Exception as ex:
+#                    print('Parameter Error')
+#                    #print('Parameter Error', sys._getframe().f_lineno)
+#                    f.close()
+#                    sys.exit(-1)
+#    return ret
+
 def parse_config_file(filename, config_type):
     ret = {}
     config = configparser.ConfigParser()
