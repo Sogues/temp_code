@@ -2,6 +2,7 @@
 
 import sys
 from multiprocessing import Process, Queue
+import time
 
 queue_1 = Queue()
 queue_2 = Queue()
@@ -100,9 +101,9 @@ class calc():
 
     def get_salary_pre(self, value):
         if value < self._jishul:
-            value = self.jishul
+            value = self._jishul
         elif value > self._jishuh:
-            value = self.jishuh
+            value = self._jishuh
         return value
 
     def get_shebao(self, value):
@@ -172,11 +173,9 @@ def main(argv):
     data_pro.start()
     calc_pro.start()
     write_pro.start()
-    """
     data_pro.join()
     calc_pro.join()
     write_pro.join()
-    """
 
 
 if __name__ == '__main__':

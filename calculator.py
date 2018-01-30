@@ -9,7 +9,7 @@ class ArgParse():
         self.params = {}
         key, val = None, None
         for elem in argv:
-            if (elem == '-c' or 
+            if (elem == '-c' or
                     elem == '-d' or
                     elem == '-o'):
                 key = elem
@@ -85,11 +85,11 @@ class calc():
 
     def get_salary_pre(self, value):
         if value < self._jishul:
-            value = self.jishul
+            value = self._jishul
         elif value > self._jishuh:
-            value = self.jishuh
+            value = self._jishuh
         return value
-    
+
     def get_shebao(self, value):
         return self.get_salary_pre(value) * self.rates
 
@@ -112,10 +112,10 @@ class calc():
             val = val * 0.35 - 5505
         else:
             val = val * 0.45 - 13505
-        return [('%.2f'%sb), 
-                ('%.2f'%val), 
-                ('%.2f'%(value-sb-val))] 
-       
+        return [('%.2f'%sb),
+                ('%.2f'%val),
+                ('%.2f'%(value-sb-val))]
+
 def main(argv):
     if len(argv) != 7:
         print('Parameter Error')
@@ -139,4 +139,7 @@ def main(argv):
 
 
 if __name__ == '__main__':
+    import time
+    a = time.time()
     main(sys.argv)
+    print(time.time() - a)
