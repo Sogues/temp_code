@@ -200,10 +200,6 @@ def handle_write(filename):
             writer.writerow(data)
 
 def main(argv):
-    if len(argv) != 7 and len(argv) != 9:
-        print('Parameter Error')
-        #print('Parameter Error', sys._getframe().f_lineno)
-        return
     args = ArgParse(argv[1:])
     config = parse_config_file(args.get_config_file(), args.get_config_type())
     calculator = calc(config)
