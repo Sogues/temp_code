@@ -87,8 +87,10 @@ def parse_config_file(filename, config_type):
     ret = {}
     config = configparser.ConfigParser()
     config.read(filename)
-    ret = dict(config[config_type])
-    return ret
+    for it in config.sections():
+        if it.lower() == config_type.lower():
+            return dict(config[it])
+    return dict(config['DEFAULT'])
 
 
 
