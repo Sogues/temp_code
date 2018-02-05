@@ -3,9 +3,20 @@
 
 from framework import FK
 
+app = FK()
+
+@app.route('/index', methods=['GET'])
+def index():
+    return 'this is a test page'
+
+@app.route('/test/js')
+def test_js():
+    return '<script src="/static/test.js"></script>'
+
 def main():
-    app = FK()
     app.run()
+
+
 
 if __name__ == '__main__':
     main()
