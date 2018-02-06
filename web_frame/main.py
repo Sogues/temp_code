@@ -13,7 +13,12 @@ def index():
 def test_js():
     return '<script src="/static/test.js"></script>'
 
+@app.route('/')
+def hello():
+    return "hello page"
+
 def main():
+    print('-----app run !!!')
     app.run()
 
 

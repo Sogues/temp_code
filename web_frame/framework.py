@@ -7,8 +7,12 @@ from work.wsgi_adapter import wsgi_app
 import work.exceptions as exceptions
 from work.helper import parse_static_key
 from work.route import Route
+from work.log import LOG_FUNC_NAME, LOG_OUT
+
+import os
 
 class ExecFunc:
+    @LOG_FUNC_NAME(class_name='ExecFunc')
     def __init__(self, func, func_type, **options):
         self.func = func
         self.options = options
@@ -30,24 +34,29 @@ TYPE_MAP = {
 }
 
 class FK:
+    @LOG_FUNC_NAME(class_name='FK')
     def __init__(self, static_folder='static'):
         self.host = '0.0.0.0'
-        self.port = 8086
+        self.port = 5000
         self.url_map = {}
         self.static_map = {}
         self.function_map = {}
         self.static_folder = static_folder
         self.route = Route(self)
 
+    @LOG_FUNC_NAME(class_name='FK')
     def dispatch_request(self, request):
+        LOG_OUT('info', '  request.url: {}, methods: {}'.
+                format(request.url, request.method))
         url = '/' + '/'.join(request.url.split('/')[3:]).split('?')[0]
-        print(url)
+        LOG_OUT('info', '  url: {}'.format(url))
         if (url.find(self.static_folder) == 1 and
                 url.index(self.static_folder) == 1):
             endpoint = 'static'
             url = url[1:]
         else:
             endpoint = self.url_map.get(url, None)
+
 
         headers = {
                 'Server': 'WEB Framework 0.1'
@@ -56,7 +65,13 @@ class FK:
         if endpoint is None:
             return ERROR_MAP['404']
 
+        LOG_OUT('info', "  dispatch_request endpoint:{}".format(endpoint))
+
+
         exec_function = self.function_map[endpoint]
+
+        LOG_OUT('info', "  func_type:{} methods:{}".
+                format(exec_function.func_type, exec_function.options.get('methods')))
 
         if exec_function.func_type == 'route':
             if request.method in exec_function.options.get('methods'):
@@ -76,13 +91,22 @@ class FK:
             return ERROR_MAP['503']
 
         status = 200
+        content_type = 'text/html'
 
+        return Response(
+                rep,
+                content_type='%s; charset=UTF-8' % content_type,
+                headers=headers,
+                status=status)
+        """
         return Response(
                 '<h1>Hello work</h1>',
                 content_type='text/html',
                 headers=headers,
                 status=status)
+        """
 
+    @LOG_FUNC_NAME(class_name='FK')
     def run(self, host=None, port=None, **options):
         for key, value in options.items():
             if value is not None:
@@ -100,12 +124,20 @@ class FK:
 
         run_simple(hostname=self.host, port=self.port, application=self, **options)
 
+    @LOG_FUNC_NAME(class_name='FK')
     def __call__(self, environ, start_response):
+        print('-----')
+        print('environ:', environ)
+        print('start_response', start_response)
+        print('-----')
         return wsgi_app(self, environ, start_response)
 
+    @LOG_FUNC_NAME(class_name='FK')
     def add_url_rule(self, url, func, func_type, endpoint=None, **options):
         if endpoint is None:
             endpoint = func.__name__
+        else:
+            LOG_OUT('info', "  {} {}".format(self.__class__.__name__, endpoint))
 
         if url in self.url_map:
             raise exceptions.URLExistsError
@@ -116,6 +148,7 @@ class FK:
         self.url_map[url] = endpoint
         self.function_map[endpoint] = ExecFunc(func, func_type, **options)
 
+    @LOG_FUNC_NAME(class_name='FK')
     def dispatch_static(self, static_path):
         if os.path.exists(static_path):
             key = parse_static_key(static_path)
