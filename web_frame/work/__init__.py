@@ -8,6 +8,8 @@ import work.exceptions as exceptions
 from work.helper import parse_static_key
 from work.route import Route
 from work.log import LOG_FUNC_NAME, LOG_OUT
+from work.template_engine import replace_template
+from work.session import create_session_id
 
 import os
 
@@ -34,8 +36,9 @@ TYPE_MAP = {
 }
 
 class FK:
+    template_folder = None
     @LOG_FUNC_NAME(class_name='FK')
-    def __init__(self, static_folder='static'):
+    def __init__(self, static_folder='static', template_folder='template'):
         self.host = '0.0.0.0'
         self.port = 5000
         self.url_map = {}
@@ -43,6 +46,8 @@ class FK:
         self.function_map = {}
         self.static_folder = static_folder
         self.route = Route(self)
+        self.template_folder = template_folder
+        FK.template_folder = self.template_folder
 
     @LOG_FUNC_NAME(class_name='FK')
     def dispatch_request(self, request):
@@ -57,16 +62,24 @@ class FK:
         else:
             endpoint = self.url_map.get(url, None)
 
-
-        headers = {
-                'Server': 'WEB Framework 0.1'
-                }
+        cookies = request.cookies
+        LOG_OUT('info', '  cookies: {}'.format(cookies))
+        if 'session_id' not in cookies:
+            session_id = create_session_id()
+            headers = {
+                    'Set-Cookie': 'session_id=%s'%session_id,
+                    'Server': 'WEB Framework 0.1'
+                    }
+            LOG_OUT('info', '  session_id: {}'.format(session_id))
+        else:
+            headers = {
+                    'Server': 'WEB Framework 0.1'
+                    }
 
         if endpoint is None:
             return ERROR_MAP['404']
 
         LOG_OUT('info', "  dispatch_request endpoint:{}".format(endpoint))
-
 
         exec_function = self.function_map[endpoint]
 
@@ -173,3 +186,8 @@ class FK:
             return Response(rep, content_type=doc_type)
         else:
             return ERROR_MAP['404']
+
+
+@LOG_FUNC_NAME()
+def simple_template(path, **options):
+    return replace_template(FK, path, **options)
