@@ -3,6 +3,7 @@
 
 from work.view import View
 from work.log import LOG_FUNC_NAME, LOG_OUT
+from work.session import AuthSession, session
 
 class BaseView(View):
 
@@ -26,3 +27,23 @@ class BaseView(View):
             return methods_meta[request.method](request, *args, **options)
         else:
             return '<h1>Unknown or unsupported require method</h1>'
+
+
+class AuthLogin(AuthSession):
+
+    @staticmethod
+    def auth_fail_callback(request, *args, **options):
+        return '<a href="/login">登录</a>'
+
+    @staticmethod
+    def auth_logic(request, *args, **options):
+        if 'user' in session.map(request).keys():
+            return True
+        return False
+
+
+class SessionView(BaseView):
+
+    @AuthLogin.auth_session
+    def dispatch_request(self, requtest, *args, **options):
+        return super(SessionView, self).dispatch_request(request, *args, **options)

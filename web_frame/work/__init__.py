@@ -9,7 +9,7 @@ from work.helper import parse_static_key
 from work.route import Route
 from work.log import LOG_FUNC_NAME, LOG_OUT
 from work.template_engine import replace_template
-from work.session import create_session_id
+from work.session import create_session_id, session
 
 import os
 
@@ -37,9 +37,10 @@ TYPE_MAP = {
 
 class FK:
     template_folder = None
+
     @LOG_FUNC_NAME(class_name='FK')
-    def __init__(self, static_folder='static', template_folder='template'):
-        self.host = '0.0.0.0'
+    def __init__(self, static_folder='static', template_folder='template', session_path='.session'):
+        self.host = '127.0.0.1'
         self.port = 5000
         self.url_map = {}
         self.static_map = {}
@@ -48,6 +49,7 @@ class FK:
         self.route = Route(self)
         self.template_folder = template_folder
         FK.template_folder = self.template_folder
+        self.session_path = session_path
 
     @LOG_FUNC_NAME(class_name='FK')
     def dispatch_request(self, request):
@@ -120,20 +122,20 @@ class FK:
         """
 
     @LOG_FUNC_NAME(class_name='FK')
-    def run(self, host=None, port=None, **options):
+    def run(self, **options):
         for key, value in options.items():
             if value is not None:
                 self.__setattr__(key, value)
 
-        if host:
-            self.host = host
-
-        if port:
-            self.port = port
-
         self.function_map['static'] = ExecFunc(
                 func=self.dispatch_static,
                 func_type='static')
+
+        if not os.path.exists(self.session_path):
+            os.mkdir(self.session_path)
+
+        session.set_storage_path(self.session_path)
+        session.load_local_session()
 
         run_simple(hostname=self.host, port=self.port, application=self, **options)
 
