@@ -40,6 +40,10 @@ def file(filename):
         data = get_data(filename)
         return render_template('file.html', data=data)
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+
 if __name__ == '__main__':
     app.debug=0
     app.run(host='0.0.0.0', port=3000)
