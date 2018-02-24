@@ -1,8 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
 {% for item in config %}
 <div>
     <a href={{ item.url }}> {{ item.title }}</a>
     {% for tag in item.tags %}
-        {{ tag }}
+    {{ tag }}
     {% endfor %}
 </div>
 {% endfor %}
+{% endblock %}

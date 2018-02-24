@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> LOUPLUS CHALLENGE </title>
+        <meta charset='tf-8'>
+        <link href="{{ url_for('static', filename="bootstrap-3.3.7-dist/css/bootstrap.min.css") }}" rel="stylesheet"> </head>
+    <body>
+        <script src="{{ url_for('static', filename="bootstrap-3.3.7-dist/js/bootstrap.min.js") }}"></script>
+        <div> 
+            {% block header %}
+            <p> louplus week2 challenge </p>
+            {% endblock %}
+        </div>
+        <div>{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
+
+
