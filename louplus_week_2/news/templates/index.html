@@ -1,3 +1,5 @@
-{% for item in titles %}
-    <h1>{{item}}</h1> 
+{% for item in config %}
+<div>
+    <a href={{ item.url }}> {{ item.title }}</a>
+</div>
 {% endfor %}
