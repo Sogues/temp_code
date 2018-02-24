@@ -49,6 +49,7 @@ def get_data_from_json(filename):
 
 @app.route('/')
 def index():
+    """
     config = []
     for filename in os.listdir(root_dir):
         data = get_data_from_json(filename)
@@ -57,6 +58,14 @@ def index():
         new_dict['url'] = url_for('file_from_json', filename=filename.split('.')[0])
         config.append(new_dict)
     print(config)
+    """
+    entries = db.session.query(File).all()
+    config = []
+    for entry in entries:
+        new_dict = {}
+        new_dict['title'] = entry.title
+        new_dict['url'] = url_for('file', file_id=entry.id)
+        config.append(new_dict)
     return render_template('index.html', config=config)
 
 
