@@ -4,10 +4,20 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 from datetime import datetime
+import redis
+from pymongo import MongoClient
 
+# app
 app = Flask(__name__)
+# mysql
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123@0.0.0.0/TEST'
 db = SQLAlchemy(app)
+# mongodb
+client = MongoClient('127.0.0.1', 27017)
+mgdb = client.shiyanlou
+# redis
+r = redis.StrictRedis(host='127.0.0.1', db=0)
+
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,6 +35,18 @@ class File(db.Model):
 
     def __repr__(self):
         return '<File(title=%s)>' % self.title
+
+    def add_tag(self, tag_name):
+        if mgdb.tag.find_one({'name':tag_name}) is None:
+            mgdb.tag.insert_one({'name':tag_name})
+
+    def remove_tag(self, tag_name):
+        if mgdb.tag.find_one({'name':tag_name}) is not None:
+            mgdb.tag.delete_one({'name':tag_name})
+
+    @property
+    def tags(self):
+        return [item['name'] for item in mgdb.tag.find() ]
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,7 +87,9 @@ def index():
         new_dict = {}
         new_dict['title'] = entry.title
         new_dict['url'] = url_for('file', file_id=entry.id)
+        new_dict['tags'] = entry.tags
         config.append(new_dict)
+    print(config)
     return render_template('index.html', config=config)
 
 

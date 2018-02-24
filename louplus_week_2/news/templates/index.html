@@ -1,5 +1,8 @@
 {% for item in config %}
 <div>
     <a href={{ item.url }}> {{ item.title }}</a>
+    {% for tag in item.tags %}
+        {{ tag }}
+    {% endfor %}
 </div>
 {% endfor %}
