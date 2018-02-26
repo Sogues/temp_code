@@ -20,12 +20,14 @@ def get_rank(user_id):
         sys.exit(-1)
     def new_cmp(x, y):
         if x[1].get('scores', 0)  != y[1].get('scores', 0):
-            return 1 if x[1].get('scores') > y[1].get('scores') else -1
+            return 1 if x[1].get('scores', 0) > y[1].get('scores', 0) else -1
         elif x[1].get('submit_time', 0) != y[1].get('submit_time', 0):
             return 1 if x[1].get('submit_time', 0) < y[1].get('submit_time', 0) else -1
         return 0
     import functools
     new_infos = sorted(infos.items(), key=functools.cmp_to_key(new_cmp), reverse=True)
+    for item in new_infos:
+        print(item)
     rank = 1
     for key, value in new_infos:
         if key == user_id:
@@ -36,10 +38,15 @@ def get_rank(user_id):
 
 if __name__ == '__main__':
     try:
+        if len(sys.argv) != 2:
+            raise Error
         user_id = sys.argv[1]
     except Exception as ex:
         print('Parameter Error')
         sys.exit(-1)
 
+    import time
+    t = time.time()
     userdata = get_rank(user_id)
+    print(time.time() - t)
     print(userdata)
