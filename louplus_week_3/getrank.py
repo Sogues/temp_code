@@ -11,10 +11,10 @@ def get_rank(user_id):
 
     infos = {}
     for entry in contests.find():
-        tmp = infos.setdefault(str(entry['user_id']), {})
+        tmp = infos.setdefault(entry['user_id'], {})
         tmp['scores'] = tmp.get('scores', 0) + entry['score']
         tmp['submit_time'] = tmp.get('submit_time', 0) + entry['submit_time']
-        infos[str(entry['user_id'])].update(tmp)
+        infos[entry['user_id']].update(tmp)
     if user_id not in infos.keys():
         print('NOTFOUND')
         sys.exit(-1)
@@ -26,8 +26,6 @@ def get_rank(user_id):
         return 0
     import functools
     new_infos = sorted(infos.items(), key=functools.cmp_to_key(new_cmp), reverse=True)
-    for item in new_infos:
-        print(item)
     rank = 1
     for key, value in new_infos:
         if key == user_id:
@@ -40,13 +38,10 @@ if __name__ == '__main__':
     try:
         if len(sys.argv) != 2:
             raise Error
-        user_id = sys.argv[1]
+        user_id = int(sys.argv[1])
     except Exception as ex:
         print('Parameter Error')
         sys.exit(-1)
 
-    import time
-    t = time.time()
     userdata = get_rank(user_id)
-    print(time.time() - t)
     print(userdata)
