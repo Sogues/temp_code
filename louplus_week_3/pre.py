@@ -1,8 +1,9 @@
 # encoding: utf-8
 
 import os
+import sys
 
-def main():
+def challenge_10():
     try:
         os.system('sudo service mongodb restart')
     except Exception as ex:
@@ -12,5 +13,15 @@ def main():
             mongoimport --db shiyanlou --collection contests --file ./contests.json --jsonArray '
     os.system(state)
 
+def challenge_11():
+    os.system('wget http://labfile.oss.aliyuncs.com/courses/1013/week3/courses.xlsx')
+
+def main(arg):
+    if arg == '10':
+        challenge_10()
+    elif arg == '11':
+        challenge_11()
+
+
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])
