@@ -44,6 +44,10 @@ def parse(argv):
                 value = [int(p) for p in port]
                 key = 'port'
             config[key] = value
+        if 'ip' not in config.keys():
+            raise Exception
+        if 'port' not in config.keys():
+            raise Exception
     except Exception as ex:
         print('Parameter Error')
         sys.exit(-1)
@@ -53,6 +57,7 @@ def parse(argv):
 def deal_scan(ip, port):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.1)
             s.connect((ip, port))
             return 1
     except Exception as ex:
@@ -65,7 +70,6 @@ def main(argv):
     for item in config.get('port', []):
         ret = deal_scan(config.get('ip'), item)
         print('{} {}'.format(item, retcode[ret]))
-        time.sleep(1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
