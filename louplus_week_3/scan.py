@@ -19,11 +19,11 @@ def judge_port(port):
         port = port.split('-')
         if len(port) != 2:
             return None
-        if port[0] > port[-1]:
+        if int(port[0]) > int(port[-1]):
             return None
         port = [item for item in range(int(port[0]), int(port[-1])+1)]
     else:
-        port = [] + [port]
+        port = [] + [int(port)]
     return port
 
 
@@ -51,7 +51,6 @@ def parse(argv):
     except Exception as ex:
         print('Parameter Error')
         sys.exit(-1)
-    print(config)
     return config
 
 def deal_scan(ip, port):
