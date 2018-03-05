@@ -3,9 +3,11 @@
 import getopt
 import sys
 import re
+import socket
+import time
 
 
-ip_pattern = '^(((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?))$'
+ip_pattern = '^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$'
 def judge_ip(ip):
     compile_ = re.compile(ip_pattern)
     if compile_.match(ip):
@@ -17,8 +19,11 @@ def judge_port(port):
         port = port.split('-')
         if len(port) != 2:
             return None
+        if port[0] > port[-1]:
+            return None
+        port = [item for item in range(int(port[0]), int(port[-1])+1)]
     else:
-        port = list(port)
+        port = [] + [port]
     return port
 
 
@@ -31,7 +36,6 @@ def parse(argv):
                 ['host=', 'port='])
         for key, value in opts:
             if key == '--host':
-                print(judge_ip(key))
                 if not judge_ip(key):
                     pass
                 key = 'ip'
@@ -41,14 +45,27 @@ def parse(argv):
                 key = 'port'
             config[key] = value
     except Exception as ex:
-        print(ex)
         print('Parameter Error')
         sys.exit(-1)
     print(config)
     return config
 
+def deal_scan(ip, port):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((ip, port))
+            return 1
+    except Exception as ex:
+        return 0
+
+
 def main(argv):
+    retcode = ['closed', 'open']
     config = parse(argv)
+    for item in config.get('port', []):
+        ret = deal_scan(config.get('ip'), item)
+        print('{} {}'.format(item, retcode[ret]))
+        time.sleep(1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
