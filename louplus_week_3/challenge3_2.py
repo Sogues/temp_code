@@ -23,7 +23,7 @@ def split():
     cb = wb['combine']
     ret_dict = {}
     titles=  [item.value for item in cb[1]]
-    for c in cb.values():
+    for c in cb.values:
         if c[0] != '创建时间':
             if c[0].year not in ret_dict.keys():
                 n_wb = Workbook()
