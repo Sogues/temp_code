@@ -9,9 +9,11 @@ from ele import ele_red_packet
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def phone_number_form():
-    phone_number = request.form['phone_number']
+    phone_number = 0
+    if request.method == 'POST':
+        phone_number = request.form['phone_number']
     get_red_packet = ele_red_packet(phone_number)
     return render_template('index.html', phone_number=get_red_packet)
 
