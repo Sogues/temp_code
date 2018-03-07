@@ -22,6 +22,9 @@ class Challenge16Pipeline(object):
             item['update_time'] = datetime.strptime(datetime.now(), date_format)
         else:
             item['update_time'] = datetime.strptime(item['update_time'], date_format)
+        item['commits'] = int(''.join(item['commits'].split(',')))
+        item['branches'] = int(''.join(item['branches'].split(',')))
+        item['releases'] = int(''.join(item['releases'].split(',')))
         self.session.add(Repository(**item))
 
     def open_spider(self, spider):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for challenge16 project
+# Scrapy settings for shiyanlou project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'challenge16.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'challenge16 (+http://www.yourdomain.com)'
+#USER_AGENT = 'shiyanlou (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -47,13 +47,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'challenge16.middlewares.Challenge16SpiderMiddleware': 543,
+#    'shiyanlou.middlewares.ShiyanlouSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'challenge16.middlewares.Challenge16DownloaderMiddleware': 543,
+#    'shiyanlou.middlewares.ShiyanlouDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -66,7 +66,10 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'challenge16.pipelines.Challenge16Pipeline': 300,
+    #'scrapy.pipelines.images.ImagesPipeline': 100,
 }
+
+#IMAGES_STORE = 'images'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

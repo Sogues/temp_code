@@ -12,7 +12,18 @@ class GithubSpider(scrapy.Spider):
 
     def parse(self, response):
         for repo in response.xpath('//ul[@data-filterable-for="your-repos-filter"]/li'):
-            yield GithubItem({
-                'name': repo.xpath('.//h3/a/text()').re_first('\s+(\S+)'),
-                'update_time': repo.xpath('.//relative-time/@datetime').extract_first()
-                })
+            item =  GithubItem()
+            item['name'] = repo.xpath('.//h3/a/text()').re_first('\s+(\S+)')
+            item['update_time'] = repo.xpath('.//relative-time/@datetime').extract_first()
+            new_url = response.urljoin(repo.xpath('.//h3/a/@href').extract_first())
+            request = scrapy.Request(new_url, callback=self.parse_repo)
+            request.meta['item'] = item
+            yield request
+
+    def parse_repo(self, response):
+        item = response.meta['item']
+        li = response.xpath('//ul[@class="numbers-summary"]/li')
+        item['commits'] = li[0].xpath('.//span/text()').re_first('\s+(\S+)\s+')
+        item['branches'] = li[1].xpath('.//span/text()').re_first('\s+(\S+)\s+')
+        item['releases'] = li[2].xpath('.//span/text()').re_first('\s+(\S+)\s+')
+        yield item
