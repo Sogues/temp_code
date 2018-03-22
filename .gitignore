@@ -6,3 +6,4 @@ datasets/
 .floyd*
 *.log
 *.xlsx
+*.json
