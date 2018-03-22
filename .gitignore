@@ -8,3 +8,4 @@ datasets/
 *.xlsx
 *.json
 *.ipynb
+*.csv
