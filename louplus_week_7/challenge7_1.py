@@ -26,8 +26,12 @@ def co2():
 
     ret = group_data.sum()
     ret.columns = ['Sum emissions']
-    ret[['Highest emission country', 'Highest emissions']] = group_data.max()[['Country name', 'all']]
-    ret[['Lowest emission country', 'Lowest emissions']] = group_data.min()[['Country name', 'all']]
+    ret[['Highest emission country', 'Highest emissions']] = (
+            group_data.apply(lambda x: x.loc[x['all'].idxmax()])[['Country name', 'all']]
+            )
+    ret[['Lowest emission country', 'Lowest emissions']] = (
+            group_data.apply(lambda x: x.loc[x['all'].idxmin()])[['Country name', 'all']]
+            )
 
     return ret
 
