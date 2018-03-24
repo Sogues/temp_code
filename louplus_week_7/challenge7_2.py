@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def co2_gdb_plot():
+def co2_gdp_plot():
     data = pd.read_excel('ClimateChange.xlsx', sheet_name='Data')
     choice = ['NY.GDP.MKTP.CD', 'EN.ATM.CO2E.KT']
     clean_data = data[['Country code', 'Series code']].copy()
@@ -37,8 +37,9 @@ def co2_gdb_plot():
         idx = df.loc[countries, 'idx']
         axes.set_xticks(idx)
         axes.set_xticklabels(countries, rotation=90)
+        axes.set_xlim([0, df.shape[0]])
         axes.legend(loc='upper left', fontsize=30)
-        ret[label] = values[df.loc['CHN', 'org_idx']]
+        ret[label] = np.round(values[df.loc['CHN', 'org_idx']], 3)
 
     fig = plt.figure(figsize=(50, 25))
     axes = fig.add_subplot(1, 1, 1)
@@ -52,7 +53,6 @@ def co2_gdb_plot():
     return axes, ret
 
 if __name__ == '__main__':
-    _1, ret = co2_gdb_plot()
-    print(_1)
+    _1, ret = co2_gdp_plot()
     print(ret)
 
