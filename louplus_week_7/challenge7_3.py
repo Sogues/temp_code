@@ -20,11 +20,11 @@ def climate_plot():
     clean_gt.index = pd.to_datetime(gt['Date'])
     clean_gt.drop('Date', axis=1, inplace=True)
     #clean_gt = clean_gt.fillna(method='ffill').fillna(method='bfill').copy()
-    clean_gt.replace(np.NAN, 0, inplace=True)
+    #clean_gt.replace(np.NAN, 0, inplace=True)
 
-    gt_12 = clean_gt.loc['1990':'2010'].resample('Y').sum()
+    gt_12 = clean_gt.loc['1990':'2010'].resample('Y').mean()
     gt_12.index = clean_data.index
-    gt_34 = clean_gt.resample('Q').sum()
+    gt_34 = clean_gt.resample('Q').mean()
 
     def scale_func(x):
         x_min = x.min(axis=0)
@@ -53,7 +53,7 @@ def climate_plot():
     axes[0][1].set_ylabel('Values', fontsize=30)
     axes[0][1].legend(loc='upper left', fontsize=20)
 
-    scale_df_34 = scale_func(gt_34[['Land Average Temperature', 'Land And Ocean Average Temperature']]).copy()
+    scale_df_34 = gt_34[['Land Average Temperature', 'Land And Ocean Average Temperature']].copy()
     scale_df_34.plot(kind='area', ax=axes[1][0],
                                 fontsize=30, linewidth=4)
     axes[1][0].set_xlabel('Quarters', fontsize=30)
