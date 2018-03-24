@@ -67,7 +67,8 @@ def climate_plot():
     axes[1][1].set_ylabel('Values', fontsize=30)
     axes[1][1].legend(loc='upper left', fontsize=20)
 
-    return axes
+    fig = plt.subplot()
+    return fig
 
 if __name__ == '__main__':
     axes = climate_plot()
