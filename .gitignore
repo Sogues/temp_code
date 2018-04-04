@@ -9,3 +9,6 @@ datasets/
 *.json
 *.ipynb
 *.csv
+*.zip
+__MACOSX
+.DS_Store
