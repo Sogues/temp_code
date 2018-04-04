@@ -19,3 +19,8 @@
     >>>a                       
     {a': 1, 'b': 2, 'c': {1, 'c2': 2}}
    
+## ERROR4
+   mysqlclient failed to install
+   fix:
+       sudo apt-get install python-dev libmysqlclient-dev
+       pip install mysqlclient
